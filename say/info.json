@@ -1,0 +1,13 @@
+{
+    "author": [
+        "retke (El Laggron)"
+    ],
+    "description": "Speak as if you are the bot.",
+    "install_msg": "why did you intall this??",
+    "short": "Speak as the bot.",
+    "requirements": [
+        "nada"
+    ],
+    "end_user_data_statement": "This cog does not persistently store data or metadata about users, but chat messages may be sent to OpenAI to generate responses. Please refer to: <https://openai.com/policies/privacy-policy>. Images, if enabled for scanning, may be sent to ai-horde. Please refer to: <https://stablehorde.net/privacy>",
+    "min_bot_version": "3.5.0"
+}
