@@ -97,7 +97,7 @@ class AIUser(Settings, PromptHandler, RandomMessageTask, commands.Cog, metaclass
                 await self.config.member(member).clear()
                 # TODO: remove user messages from cache instead of clearing the whole cache
                 self.cached_messages = Cache(limit=100)
-
+    
     @app_commands.command(name="chat")
     @app_commands.describe(text="The prompt you want to send to the AI.")
     @app_commands.checks.cooldown(1, 30)
@@ -169,6 +169,11 @@ class AIUser(Settings, PromptHandler, RandomMessageTask, commands.Cog, metaclass
 
     async def is_common_valid_reply(self, ctx: commands.Context) -> bool:
         """ Run some common checks to see if a message is valid for the bot to reply to """
+        """
+        #ignore bully because bully - save for a rainy day
+        if ctx.message.author.id == '742654760720793691':
+            return False
+        """
         if not ctx.guild:
             return False
         if await self.bot.cog_disabled_in_guild(self, ctx.guild):
