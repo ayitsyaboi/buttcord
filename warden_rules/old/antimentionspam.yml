@@ -1,0 +1,10 @@
+name: antimentionspam
+rank: 2 #rank 2 is any roles below mod/bouncer
+event: [on-message, on-message-edit]
+if:
+  - message-contains-more-than-unique-mentions: 5 #message has more than 5 different users mentioned
+do:
+  - add-user-heatpoints: [10, 10m] #add 10 points for 10 minutes, at 20 points a user is put in timeout to avoid spam.
+  - delete-user-message: #delete that annoying bullshit
+  - send-to-channel: [$user_mention, "Mass mentions will result in a timeout. You have been warned. :spank:"] #warn the motherfucker
+  - delete-last-message-sent-after: 15 seconds #delete warning after 15 seconds

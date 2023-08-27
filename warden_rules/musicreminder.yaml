@@ -1,0 +1,11 @@
+rank: 1
+name: musicreminder
+event: on-message
+if:
+  - message-contains-word: ["[?]play", "[?]p", ".play", ".p", "[?]q", "[?]queue", ".q", ".queue", "[?]fs", ".fs", "[?]clear", ".clear", "[?]skip", ".skip"] 
+  - if-not:
+      - channel-matches-any: [704053866286547112]
+do:
+  - send-message: [$channel_id, "$user_mention music commands go in <#704053866286547112>  <:spank:343994614073524225>"]
+  - delete-user-message:
+  - delete-last-message-sent-after: 10 seconds

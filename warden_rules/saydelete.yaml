@@ -1,0 +1,7 @@
+rank: 1
+name: saydelete
+event: [on-message]
+if: 
+  - message-matches-any: ["-say*"]
+do:
+  - delete-user-message:

@@ -1,0 +1,7 @@
+rank: 1
+name: yaboi
+event: on-message
+if:
+  - message-matches-any: ["yaboi"]
+do:
+  - send-message: [$channel_id, "is kinda epic"]

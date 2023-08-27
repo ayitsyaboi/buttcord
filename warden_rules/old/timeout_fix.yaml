@@ -1,0 +1,10 @@
+rank: 2
+name: timeout_fix
+event: on-role-add    
+if:
+  - user-has-any-role-in: [338366580826308610]
+do:
+  - remove-roles-from-user: [338223232261947393, 690294714422919178]
+  - notify-staff:
+               title: "Member Put in Timeout"
+               content: "$user_mention has automatically had all overriding roles stripped due to being muted. You must manually reassign any previous roles if/when you remove them from timeout.
