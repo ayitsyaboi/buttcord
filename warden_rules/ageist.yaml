@@ -5,5 +5,5 @@ event: on-user-join
 if:
     - user-created-less-than: 1 days
 do:
-    - ban-user-and-delete: 1
-    - send-mod-log: "$user's account is less than 1 day old and has been banned. Most likely a spammer."
+    - softban-user:
+    - send-mod-log: "$user's account is less than 1 day old and has been kicked. Most likely a spammer."
