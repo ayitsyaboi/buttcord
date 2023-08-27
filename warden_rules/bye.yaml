@@ -1,0 +1,8 @@
+rank: 1
+name: bye
+event: [on-message]
+if: 
+  - message-matches-any: ["-bye"]
+do:
+  - delete-user-message: 
+  - send-message: [$channel_id, $user has left $guild.]

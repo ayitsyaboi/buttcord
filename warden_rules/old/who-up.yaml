@@ -1,0 +1,7 @@
+rank: 1
+name: who up
+event: on-message
+if:
+  - message-matches-any: ["who up"]
+do:
+  - send-message: [$channel_id, "u lol"]

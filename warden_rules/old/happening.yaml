@@ -1,0 +1,7 @@
+rank: 1
+name: happening
+event: on-message
+if:
+  - message-matches-any: [it's happening]
+do:
+  - send-message: [$channel_id, "https://i.imgur.com/7drHiqr.gif"]

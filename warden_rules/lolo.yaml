@@ -1,0 +1,7 @@
+rank: 1
+name: lolo
+event: on-message
+if:
+  - message-matches-any: ["lolo"]
+do:
+  - send-message: [$channel_id, "is epic"]

@@ -1,0 +1,14 @@
+rank: 1
+name: nobadwordspls
+event: [on-message, on-message-edit]
+if:
+  - if-any:
+     - username-matches-any: ["*nigger*"]
+     - message-matches-any: ["*nigger*"]
+     - nickname-matches-any: ["*nigger*"]
+do:
+  - delete-user-message:
+  - add-roles-to-user: [338366580826308610]
+  - notify-staff:
+               title: "Content Removed"
+               content: "New user $user_mention dropped a fat slur in $channel_mention\nMessage content, if any: $message\n[Click to jump]($message_link)"

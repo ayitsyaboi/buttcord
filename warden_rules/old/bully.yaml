@@ -1,0 +1,7 @@
+rank: 1
+name: bully
+event: on-message
+if:
+  - message-matches-any: ["bully"]
+do:
+  - send-message: [$channel_id, "is epic"]

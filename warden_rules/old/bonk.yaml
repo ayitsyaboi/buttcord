@@ -1,0 +1,7 @@
+rank: 1
+name: bonk
+event: on-message
+if:
+  - message-matches-any: ["horny"]
+do:
+  - send-message: [$channel_id, https://i.imgur.com/4lg9M2H.jpg]

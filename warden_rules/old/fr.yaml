@@ -1,0 +1,7 @@
+rank: 1
+name: Fr
+event: on-message
+if:
+  - message-matches-any: ["fr"]
+do:
+  - send-message: [$channel_id, "(for real)"]

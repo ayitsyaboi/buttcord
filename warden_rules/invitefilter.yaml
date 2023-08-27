@@ -1,0 +1,12 @@
+rank: 2
+name: invitefilter
+event: [on-message, on-message-edit]
+if:
+  - message-contains-invite: true
+do:
+  - delete-user-message: 
+  - send-message: [$channel_id, $user_mention invite links are not allowed in this server.]
+  - delete-last-message-sent-after: 5 seconds
+  - notify-staff:
+               title: "Content Removed"
+               content: "$user_mention posted an invite to $channel_mention\nInvite link: $message"

@@ -1,0 +1,7 @@
+rank: 1
+name: basura
+event: on-message
+if:
+  - message-matches-any: ["basura"]
+do:
+  - send-message: [$channel_id, "(is gay)"]

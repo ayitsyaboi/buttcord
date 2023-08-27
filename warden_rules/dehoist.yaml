@@ -1,0 +1,10 @@
+rank: 2
+name: dehoist
+event: [periodic, manual]
+run-every: 15 minutes
+if:
+  - if-any:
+     - username-matches-any: ["!*"]
+     - nickname-matches-any: ["!*"]
+do:
+  - set-user-nickname: "hoisting is cringe"

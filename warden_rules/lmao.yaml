@@ -1,0 +1,7 @@
+rank: 1
+name: lmao
+event: on-message
+if:
+  - message-matches-any: ["ayy", "ayyy"]
+do:
+  - send-message: [$channel_id, "lmao"]

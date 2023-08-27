@@ -1,0 +1,11 @@
+rank: 1
+name: ping-pong
+event: [on-message]
+if:
+  - message-matches-any: ["ping", "pong"]
+do:
+  - compare: ["$message", "contains-pattern", "ping"]
+  - if-true:
+      - send-message: [$channel_id, "pong"]
+  - if-false:
+     - send-message: [$channel_id, "ping"]

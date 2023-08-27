@@ -1,0 +1,19 @@
+
+rank: 2
+priority: 1
+name: mediafilter
+event: [on-message, on-message-edit]
+if: 
+  - if-any:
+     - message-contains-url: true
+  - if-not:
+     - message-matches-any: ["*youtube.com*", "*spotify.com*", "*tenor.com*", "*giphy.com*", "*soundcloud.com*", "*bandcamp.com*", "*discord.com*", "*discord.gg*", "*youtu.be*"]
+     - user-has-any-role-in: [488130085233360917, 338212661429010433, 338223232261947393]
+do:
+  - delete-user-message: 
+  - send-message: [$channel_id, $user_mention you cannot post non-music links until level 5. Repeat offenses will result in a timeout. You can level up by participating in chat or ask a moderater to manually approve you for the `reuglars` role.]
+  - delete-last-message-sent-after: 20 seconds
+  - add-user-heatpoints: [5, 10m] #add 5 points for 10 minutes, at 20 points a user is put in timeout to avoid spam. 
+  - notify-staff:
+               title: "Content Removed"
+               content: "$user_mention attempted to post a link in $channel_mention\nMessage content, if any: $message\n[Click to jump]($message_link)"

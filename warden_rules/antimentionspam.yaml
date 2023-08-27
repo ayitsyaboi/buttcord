@@ -1,0 +1,13 @@
+name: antimentionspam
+rank: 2 #rank 2 is any roles below mod/bouncer
+event: [on-message, on-message-edit]
+if:
+  - message-contains-more-than-unique-mentions: 5 #message has more than 5 different users mentioned
+do:
+  - delete-user-message: #delete that annoying bullshit
+  - send-message: [$channel_id, $user_mention Trying to mention `@everyone` will result in a timeout. You have been warned. <:spank:343994614073524225>] #warn the motherfucker
+  - delete-last-message-sent-after: 15 seconds #delete warning after 15 seconds
+  - add-user-heatpoints: [10, 10m] #add 10 points for 10 minutes, at 30 points a user is put in timeout to avoid spam.
+  - notify-staff:
+               title: "Content Removed"
+               content: "$user_mention attempted to mass ping in $channel_mention\nMessage content, if any: $message\n[Click to jump]($message_link)"

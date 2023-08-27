@@ -1,0 +1,11 @@
+rank: 2
+priority: 2 #THIS RULE MUST ALWAYS RUN LAST FOR HEAT CHECKS TO WORK IDIOT. DO NOT FOROGET. 
+name: timeouter
+event: [on-message, on-message-edit]
+if:
+  - user-heat-more-than: 20
+do:
+  - add-roles-to-user: [338366580826308610]
+  - notify-staff:
+               title: "Member Put in Timeout"
+               content: "$user_mention was put in timeout for too many infractions."

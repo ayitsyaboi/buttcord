@@ -1,0 +1,8 @@
+rank: 1
+name: tfwnogf
+event: on-message
+if:
+  - message-matches-any: ["*gf*"]
+do:
+  - send-message: [$channel_id, https://i.imgur.com/x9SXgqP.jpg]
+

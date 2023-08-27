@@ -1,0 +1,7 @@
+rank: 1
+name: who vibin
+event: on-message
+if:
+  - message-matches-any: ["who vibin"]
+do:
+  - send-message: [$channel_id, "u lol"]

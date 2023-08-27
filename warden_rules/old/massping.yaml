@@ -1,0 +1,15 @@
+rank: 2
+priority: 1
+name: massping
+event: [on-message, on-message-edit]
+if: 
+  - if-any:
+     - message-matches-any: ["*@everyone*"]
+do:
+  - delete-user-message: 
+  - send-message: [$channel_id, $user_mention you cannot use this. Multiple attempts will result in a timeout.]
+  - delete-last-message-sent-after: 15 seconds
+  - add-user-heatpoints: [10, 30m] #add 5 points for 10 minutes, at 20 points a user is put in timeout to avoid spam. 
+  - notify-staff:
+               title: "Content Removed"
+               content: "$user_mention attempted to mass ping in $channel_mention\nMessage content, if any: $message\n[Click to jump]($message_link)"

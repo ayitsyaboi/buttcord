@@ -1,0 +1,7 @@
+rank: 1
+name: gayrrett
+event: on-message
+if:
+  - message-matches-any: ["gayrrett"]
+do:
+  - send-message: [$channel_id, "is p epic"]
