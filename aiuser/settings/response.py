@@ -108,7 +108,7 @@ class ResponseSettings(MixinMeta):
 
     @response.command(name="toggleoptinembed")
     async def toggle_optin_embed(self, ctx):
-        Toggles warning embed about opt-in on or off
+        #Toggles warning embed about opt-in on or off
         current = await self.config.guild(ctx.guild).optin_disable_embed()
         await self.config.guild(ctx.guild).optin_disable_embed.set(not current)
 
