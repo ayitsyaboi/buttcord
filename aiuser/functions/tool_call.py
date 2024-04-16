@@ -1,10 +1,15 @@
+
+
 import logging
-from aiuser.functions.types import Function, Parameters, ToolCallSchema
+
+from aiuser.functions.tool_call import ToolCall
+from aiuser.functions.types import (Function, Parameters,
+                                                  ToolCallSchema)
 
 logger = logging.getLogger("red.bz_cogs.aiuser")
 
 
-class NoResponseToolCall:
+class NoResponseToolCall(ToolCall):
     schema = ToolCallSchema(function=Function(
         name="do_not_respond",
         description="Choose to not respond to the messages, by ignoring the conversation",
@@ -21,12 +26,9 @@ class NoResponseToolCall:
             },
             required=["reason", "respond"]
         )))
-
     function_name = schema.function.name
 
     async def _handle(self, arguments):
-        from aiuser.functions.tool_call import ToolCall  # Local import
-        
         if arguments["respond"]:
             return None
 
