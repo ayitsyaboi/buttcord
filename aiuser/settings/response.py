@@ -18,7 +18,7 @@ logger = logging.getLogger("red.bz_cogs.aiuser")
 
 class ResponseSettings(MixinMeta):
     
-    @aiuser.group(name="response")
+    @aiuser.group(name="response")()
     @checks.admin_or_permissions(manage_guild=True)
     async def response(self, _):
         """ Change settings used for generated responses
