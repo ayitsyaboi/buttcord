@@ -104,6 +104,7 @@ class ResponseSettings(MixinMeta):
         else:
             await self.config.guild(ctx.guild).removelist_regexes.set(DEFAULT_REMOVE_PATTERNS)
             return await confirm.edit(embed=discord.Embed(title="Removelist reset.", color=await ctx.embed_color()))
+
 """
     @response.command(name="toggleoptinembed")
     async def toggle_optin_embed(self, ctx):
@@ -373,4 +374,3 @@ async def set_custom_parameters(self, ctx: commands.Context, *, json_block: str)
                 embed.add_field(name=key, value=f"```{json.dumps(value, indent=4)}```", inline=False)
 
         await ctx.send(embed=embed)
-
