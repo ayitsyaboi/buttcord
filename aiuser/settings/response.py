@@ -17,7 +17,7 @@ logger = logging.getLogger("red.bz_cogs.aiuser")
 
 
 class ResponseSettings(MixinMeta):
-
+    
     @aiuser.group(name="response")
     @checks.admin_or_permissions(manage_guild=True)
     async def response(self, _):
@@ -26,7 +26,8 @@ class ResponseSettings(MixinMeta):
             (All subcommands are per server)
         """
         pass
-
+    response = aiuser.group(name="response")
+    
     @response.group(name="removelist")
     async def removelist(self, _):
         """ Manage the list of regex patterns to remove from responses
