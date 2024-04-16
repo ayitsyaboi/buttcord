@@ -1,11 +1,9 @@
 import logging
 import re
-from typing import Optional
+from typing import Optional, Union
 
 import discord
 from redbot.core import checks, commands
-from redbot.core.utils.chat_formatting import box, pagify
-from redbot.core.utils.menus import SimpleMenu
 
 from aiuser.abc import MixinMeta, aiuser
 
@@ -13,6 +11,7 @@ logger = logging.getLogger("red.bz_cogs.aiuser")
 
 
 class TriggerSettings(MixinMeta):
+    @checks.admin_or_permissions(manage_guild=True)
     @aiuser.group()
     async def trigger(self, _):
         """ Configure trigger settings for the bot to respond to
@@ -21,8 +20,17 @@ class TriggerSettings(MixinMeta):
         """
         pass
 
+    @trigger.command(name="minlength", aliases=["min_length"])
+    async def min_length(self, ctx: commands.Context, length: int):
+        """ Set the minimum length of messages that the bot will respond to"""
+        await self.config.guild(ctx.guild).messages_min_length.set(length)
+        embed = discord.Embed(
+            title="The minimum length is now:",
+            description=f"{length}",
+            color=await ctx.embed_color())
+        return await ctx.send(embed=embed)
+
     @trigger.command(name="ignore", aliases=["ignoreregex"])
-    @checks.admin_or_permissions(manage_guild=True)
     async def ignore(self, ctx: commands.Context, *, regex_pattern: Optional[str]):
         """ Messages matching this regex won't be replied to or seen, by the bot """
         if not regex_pattern:
@@ -53,7 +61,6 @@ class TriggerSettings(MixinMeta):
         return await ctx.send(embed=embed)
 
     @trigger.command()
-    @checks.admin_or_permissions(manage_guild=True)
     async def public_forget(self, ctx: commands.Context):
         """ Toggles whether anyone can use the forget command, or only moderators """
         value = not await self.config.guild(ctx.guild).public_forget()
@@ -64,105 +71,76 @@ class TriggerSettings(MixinMeta):
             color=await ctx.embed_color())
         return await ctx.send(embed=embed)
 
-    @trigger.group()
-    @checks.admin_or_permissions(manage_guild=True)
-    async def random(self, _):
-        """ Configure the random trigger
-
-            Every 33 minutes, a RNG roll will determine if a random message will be sent using a list of topics as a prompt.
-
-            (All subcommands per server)
+    @trigger.group(name="whitelist", aliases=["whitelists"])
+    async def trigger_whitelist(self, ctx: commands.Context):
+        """ If configured, only whitelisted roles / users can trigger a response in whitelisted channels
         """
         pass
 
-    @random.command(name="toggle")
-    @checks.is_owner()
-    async def random_toggle(self, ctx: commands.Context):
-        """ Toggles random message trigger """
-        value = not await self.config.guild(ctx.guild).random_messages_enabled()
-        await self.config.guild(ctx.guild).random_messages_enabled.set(value)
-        embed = discord.Embed(
-            title="Senting of random messages:",
-            description=f"{value}",
-            color=await ctx.embed_color())
-        return await ctx.send(embed=embed)
+    @trigger_whitelist.command(name="add")
+    async def trigger_whitelist_add(self, ctx: commands.Context, new: Union[discord.Role, discord.Member]):
+        """ Add a role/user to the whitelist """
+        if isinstance(new, discord.Role):
+            whitelist = await self.config.guild(ctx.guild).roles_whitelist()
+            if new.id in whitelist:
+                return await ctx.send("That role is already whitelisted")
+            whitelist.append(new.id)
+            await self.config.guild(ctx.guild).roles_whitelist.set(whitelist)
 
-    @random.command(name="percent", aliases=["set", "chance"])
-    @checks.is_owner()
-    async def set_random_rng(self, ctx: commands.Context, percent: float):
-        """ Sets the chance that a random message will be sent every 33 minutes
+        elif isinstance(new, discord.Member):
+            whitelist = await self.config.guild(ctx.guild).members_whitelist()
+            if new.id in whitelist:
+                return await ctx.send("That user is already whitelisted")
+            whitelist.append(new.id)
+            await self.config.guild(ctx.guild).members_whitelist.set(whitelist)
 
-            **Arguments**
-                - `percent` A number between 0 and 100
-        """
-        await self.config.guild(ctx.guild).random_messages_percent.set(percent / 100)
-        embed = discord.Embed(
-            title="The chance that a random message will be sent is:",
-            description=f"{percent:.2f}%",
-            color=await ctx.embed_color())
-        return await ctx.send(embed=embed)
+        return await self.show_trigger_whitelist(ctx, discord.Embed(
+            title="The whitelist is now:",
+            color=await ctx.embed_color()))
 
-    @random.group(name="topics")
-    @checks.admin_or_permissions(manage_guild=True)
-    async def random_topics(self, _):
-        """ Manage topics to be used in random messages for current server """
-        pass
+    @trigger_whitelist.command(name="remove")
+    async def trigger_whitelist_remove(self, ctx: commands.Context, rm: Union[discord.Role, discord.Member]):
+        """ Remove a user/role from the whitelist """
+        if isinstance(rm, discord.Role):
+            whitelist = await self.config.guild(ctx.guild).roles_whitelist()
+            if rm.id not in whitelist:
+                return await ctx.send("That role is not whitelisted")
+            whitelist.remove(rm.id)
+            await self.config.guild(ctx.guild).roles_whitelist.set(whitelist)
 
-    @random_topics.command(name="show", aliases=["list"])
-    @checks.admin_or_permissions(manage_guild=True)
-    async def show_random_topics(self, ctx: commands.Context):
-        """ Lists topics to used in random messages """
-        topics = await self.config.guild(ctx.guild).random_messages_topics()
+        elif isinstance(rm, discord.Member):
+            whitelist = await self.config.guild(ctx.guild).members_whitelist()
+            if rm.id not in whitelist:
+                return await ctx.send("That user is not whitelisted")
+            whitelist.remove(rm.id)
+            await self.config.guild(ctx.guild).members_whitelist.set(whitelist)
+        return await self.show_trigger_whitelist(ctx, discord.Embed(
+            title="The whitelist is now:",
+            color=await ctx.embed_color()))
 
-        if not topics:
-            return await ctx.send("The topic list is empty.")
+    @trigger_whitelist.command(name="list", aliases=["show"])
+    async def trigger_whitelist_list(self, ctx: commands.Context):
+        """ Show the whitelist """
+        return await self.show_trigger_whitelist(ctx, discord.Embed(
+            title="Whitelist of users/roles that will trigger LLM",
+            color=await ctx.embed_color()))
 
-        formatted_list = "\n".join(f"{index+1}. {topic}" for index, topic in enumerate(topics))
-        pages = []
-        for text in pagify(formatted_list, page_length=888):
-            page = discord.Embed(
-                title=f"List of random message topics in {ctx.guild.name}",
-                description=box(text),
-                color=await ctx.embed_color())
-            pages.append(page)
+    @trigger_whitelist.command(name="clear")
+    async def trigger_whitelist_clear(self, ctx: commands.Context):
+        """ Clear the whitelist, allowing anyone to trigger LLM in whitelisted channels """
+        await self.config.guild(ctx.guild).roles_whitelist.set([])
+        await self.config.guild(ctx.guild).members_whitelist.set([])
+        return await ctx.send("The whitelist has been cleared.")
 
-        if len(pages) == 1:
-            return await ctx.send(embed=pages[0])
-
-        for i, page in enumerate(pages):
-            page.set_footer(text=f"Page {i+1} of {len(pages)}")
-
-        return await SimpleMenu(pages).start(ctx)
-
-    @random_topics.command(name="add", aliases=["a"])
-    @checks.admin_or_permissions(manage_guild=True)
-    async def add_random_topics(self, ctx: commands.Context, *, topic: str):
-        """ Add a new topic """
-        topics = await self.config.guild(ctx.guild).random_messages_topics()
-        if topic in topics:
-            return await ctx.send("That topic is already in the list.")
-        if len(topic) > 300:
-            return await ctx.send("That topic is too long.")
-        topics.append(topic)
-        await self.config.guild(ctx.guild).random_messages_topics.set(topics)
-        embed = discord.Embed(
-            title="Added topic to random message topics:",
-            description=f"{topic}",
-            color=await ctx.embed_color())
-        return await ctx.send(embed=embed)
-
-    @random_topics.command(name="remove", aliases=["rm", "delete"])
-    @checks.admin_or_permissions(manage_guild=True)
-    async def remove_random_topics(self, ctx: commands.Context, *, number: int):
-        """ Removes a topic (by number) from the list"""
-        topics = await self.config.guild(ctx.guild).random_messages_topics()
-        if not (1 <= number <= len(topics)):
-            return await ctx.send("Invalid topic number.")
-        topic = topics[number - 1]
-        topics.remove(topic)
-        await self.config.guild(ctx.guild).random_messages_topics.set(topics)
-        embed = discord.Embed(
-            title="Removed topic from random message topics:",
-            description=f"{topic}",
-            color=await ctx.embed_color())
+    async def show_trigger_whitelist(self, ctx: commands.Context, embed: discord.Embed):
+        roles_whitelist = await self.config.guild(ctx.guild).roles_whitelist()
+        users_whitelist = await self.config.guild(ctx.guild).members_whitelist()
+        if roles_whitelist:
+            embed.add_field(name="Roles", value="\n".join(
+                [f"<@&{r}>" for r in roles_whitelist]), inline=False)
+        if users_whitelist:
+            embed.add_field(name="Users", value="\n".join(
+                [f"<@{u}>" for u in users_whitelist]), inline=False)
+        if not roles_whitelist and not users_whitelist:
+            embed.description = "Nothing whitelisted\nAnyone can trigger bot in whitelisted channels"
         return await ctx.send(embed=embed)

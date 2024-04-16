@@ -1,7 +1,33 @@
 {
-    "author" : ["zhaobenny"],
-    "install_msg" : "Please don't commit any crimes.",
-    "short" : "Human-like behavior powered by OpenAI.",
-    "end_user_data_statement": "This cog does not persistently store data or metadata about users, but chat messages may be sent to OpenAI to generate responses. Please refer to: <https://openai.com/policies/privacy-policy>. Images, if enabled for scanning, may be sent to ai-horde. Please refer to: <https://stablehorde.net/privacy>",
-    "tags" : ["chatgpt"]
+    "author": [
+        "zhaobenny"
+    ],
+    "description": "Human-like Discord interactions powered by OpenAI (+ other LLMs) for messages (and images)",
+    "install_msg": "See cog README for additional setup. \nQuick startup guide for OpenAI: \n1. Set (preferably paid) OpenAI key using [p]set api openai api_key,INSERT_API_KEY \n2. [p]aiuser add <#CHANNEL_NAME> \n3. [p]aiuser optin to opt yourself into getting messages used (other users will need to do the same)",
+    "short": "Human-like user behavior powered by LLMs.",
+    "permissions": [
+        "read_messages",
+        "send_messages",
+        "embed_links",
+        "attach_files",
+        "add_reactions"
+    ],
+    "requirements": [
+        "openai>=1.3.8",
+        "tenacity",
+        "tiktoken",
+        "Pillow",
+        "beautifulsoup4",
+        "aiohttp"
+    ],
+    "end_user_data_statement": "This cog does not automatically store persistent data or metadata about users, but chat messages/images may be sent to OpenAI/third parties to generate responses. Please refer to: <https://openai.com/policies/privacy-policy>, <https://stablehorde.net/privacy> and other third party privacy policies for more information.",
+    "tags": [
+        "openai",
+        "chatgpt",
+        "chatbot",
+        "openrouter",
+        "ai",
+        "image generation"
+    ],
+    "min_bot_version": "3.5.0"
 }
