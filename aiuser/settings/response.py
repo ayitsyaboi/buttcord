@@ -17,9 +17,8 @@ logger = logging.getLogger("red.bz_cogs.aiuser")
 
 
 class ResponseSettings(MixinMeta):
-    
-    response = aiuser.group(name="response")
 
+    @aiuser.group(name="response")
     @checks.admin_or_permissions(manage_guild=True)
     async def response(self, _):
         """ Change settings used for generated responses
@@ -27,7 +26,7 @@ class ResponseSettings(MixinMeta):
             (All subcommands are per server)
         """
         pass
-    
+
     @response.group(name="removelist")
     async def removelist(self, _):
         """ Manage the list of regex patterns to remove from responses
@@ -106,10 +105,9 @@ class ResponseSettings(MixinMeta):
             await self.config.guild(ctx.guild).removelist_regexes.set(DEFAULT_REMOVE_PATTERNS)
             return await confirm.edit(embed=discord.Embed(title="Removelist reset.", color=await ctx.embed_color()))
 
-
     @response.command(name="toggleoptinembed")
     async def toggle_optin_embed(self, ctx):
-        #Toggles warning embed about opt-in on or off
+        """Toggles warning embed about opt-in on or off"""
         current = await self.config.guild(ctx.guild).optin_disable_embed()
         await self.config.guild(ctx.guild).optin_disable_embed.set(not current)
 
@@ -125,9 +123,9 @@ class ResponseSettings(MixinMeta):
         await ctx.send(embed=embed)
 
 
-@response.group()
-@checks.is_owner()
-async def history(self, _):
+    @response.group()
+    @checks.is_owner()
+    async def history(self, _):
         """ Change the prompt context settings for the current server
 
             The most recent messages that are within the time gap and message limits are used to create context.
@@ -135,8 +133,8 @@ async def history(self, _):
         """
         pass
 
-@history.command(name="backread", aliases=["messages", "size"])
-async def history_backread(self, ctx: commands.Context, new_value: int):
+    @history.command(name="backread", aliases=["messages", "size"])
+    async def history_backread(self, ctx: commands.Context, new_value: int):
         """ Set max amount of messages to be used """
         await self.config.guild(ctx.guild).messages_backread.set(new_value)
         embed = discord.Embed(
@@ -145,8 +143,8 @@ async def history_backread(self, ctx: commands.Context, new_value: int):
             color=await ctx.embed_color())
         return await ctx.send(embed=embed)
 
-@history.command(name="time", aliases=["gap"])
-async def history_time(self, ctx: commands.Context, new_value: int):
+    @history.command(name="time", aliases=["gap"])
+    async def history_time(self, ctx: commands.Context, new_value: int):
         """ Set max time (s) allowed between messages to be used
 
             eg. if set to 60, once messsages are more than 60 seconds apart, more messages will not be added.
@@ -160,9 +158,9 @@ async def history_time(self, ctx: commands.Context, new_value: int):
             color=await ctx.embed_color())
         return await ctx.send(embed=embed)
 
-@response.group(name="weights", aliases=["logit_bias", "bias"])
-@checks.admin_or_permissions(manage_guild=True)
-async def weights(self, _):
+    @response.group(name="weights", aliases=["logit_bias", "bias"])
+    @checks.admin_or_permissions(manage_guild=True)
+    async def weights(self, _):
         """
             Bias the LLM for/against certain words (tokens)
 
@@ -172,8 +170,8 @@ async def weights(self, _):
         """
         pass
 
-@weights.command(name="list", aliases=["show"])
-async def show_weight(self, ctx: commands.Context):
+    @weights.command(name="list", aliases=["show"])
+    async def show_weight(self, ctx: commands.Context):
         """
             Show weights
         """
@@ -192,8 +190,8 @@ async def show_weight(self, ctx: commands.Context):
             embed.add_field(name=word, value=weight, inline=False)
         await ctx.send(embed=embed)
 
-@weights.command(name="add")
-async def set_weight(self, ctx: commands.Context, word: str, weight: int):
+    @weights.command(name="add")
+    async def set_weight(self, ctx: commands.Context, word: str, weight: int):
         """
             Sets weight for a specific word
 
@@ -250,8 +248,8 @@ async def set_weight(self, ctx: commands.Context, word: str, weight: int):
             )
             return await ctx.send(embed=embed)
 
-@weights.command(name="remove", aliases=["delete"])
-async def remove_weight(self, ctx: commands.Context, word: str):
+    @weights.command(name="remove", aliases=["delete"])
+    async def remove_weight(self, ctx: commands.Context, word: str):
         """
         Removes weight for a specific word
 
@@ -282,7 +280,7 @@ async def remove_weight(self, ctx: commands.Context, word: str):
         )
         return await ctx.send(embed=embed)
 
-async def get_all_tokens(self, word: str, encoding: tiktoken.Encoding):
+    async def get_all_tokens(self, word: str, encoding: tiktoken.Encoding):
         """
             Returns all possible tokens for a word
         """
@@ -303,9 +301,9 @@ async def get_all_tokens(self, word: str, encoding: tiktoken.Encoding):
         append_token_if_single(" " + word.upper())
         return list(tokens)
 
-@response.command(name="parameters")
-@checks.is_owner()
-async def set_custom_parameters(self, ctx: commands.Context, *, json_block: str):
+    @response.command(name="parameters")
+    @checks.is_owner()
+    async def set_custom_parameters(self, ctx: commands.Context, *, json_block: str):
         """ Set custom parameters for an endpoint using a JSON code block
 
             To reset parameters to default, use `[p]aiuser response parameters reset`
@@ -375,3 +373,4 @@ async def set_custom_parameters(self, ctx: commands.Context, *, json_block: str)
                 embed.add_field(name=key, value=f"```{json.dumps(value, indent=4)}```", inline=False)
 
         await ctx.send(embed=embed)
+

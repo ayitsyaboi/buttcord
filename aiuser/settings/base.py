@@ -82,9 +82,9 @@ class Settings(
             value=f"`{config['reply_percent'] * 100:.2f}`%",
         )
 
-       # main_embed.add_field(
-        #    name="Opt In By Default", inline=True, value=f"`{config['optin_by_default']}`"
-       # )
+        main_embed.add_field(
+            name="Opt In By Default", inline=True, value=f"`{config['optin_by_default']}`"
+        )
         main_embed.add_field(
             name="Always Reply if Pinged",
             inline=True,
@@ -374,13 +374,13 @@ class Settings(
         for i, page in enumerate(menu_pages):
             page.set_footer(text=f"Page {i+1} of {len(menu_pages)}")
         return (await SimpleMenu(menu_pages).start(ctx))
-"""
+
     @aiuser.command()
     async def optin(self, ctx: commands.Context):
-        Opt in of sending your messages / images to OpenAI or another endpoint (bot-wide)
+        """Opt in of sending your messages / images to OpenAI or another endpoint (bot-wide)
 
         This will allow the bot to reply to your messages or using your messages.
-       
+        """
         optin = await self.config.optin()
         if ctx.author.id in await self.config.optin():
             return await ctx.send("You are already opted in.")
@@ -394,10 +394,10 @@ class Settings(
 
     @aiuser.command()
     async def optout(self, ctx: commands.Context):
-    Opt out of sending your messages / images to OpenAI or another endpoint (bot-wide)
+        """Opt out of sending your messages / images to OpenAI or another endpoint (bot-wide)
 
         This will prevent the bot from replying to your messages or using your messages.
-      
+        """
         optout = await self.config.optout()
         if ctx.author.id in optout:
             return await ctx.send("You are already opted out.")
@@ -412,10 +412,10 @@ class Settings(
     @aiuser.command(name="optinbydefault", alias=["optindefault"])
     @checks.admin_or_permissions(manage_guild=True)
     async def optin_by_default(self, ctx: commands.Context):
-        Toggles whether users are opted in by default in this server
+        """Toggles whether users are opted in by default in this server
 
         This command is disabled for servers with more than 150 members.
-        
+        """
         if len(ctx.guild.members) > 150:
             # if you STILL want to enable this for a server with more than 150 members
             # add the line below to the specific guild in the cog's settings.json:
@@ -433,4 +433,3 @@ class Settings(
             color=await ctx.embed_color(),
         )
         return await ctx.send(embed=embed)
-"""

@@ -45,7 +45,7 @@ class AIUser(
         self.config = Config.get_conf(self, identifier=754070)
         self.openai_client: AsyncOpenAI = None
         # cached options
-        #self.optindefault: dict[int, bool] = {}
+        self.optindefault: dict[int, bool] = {}
         self.channels_whitelist: dict[int, list[int]] = {}
         self.ignore_regex: dict[int, re.Pattern] = {}
         self.override_prompt_start_time: dict[int, datetime] = {}
@@ -54,8 +54,8 @@ class AIUser(
         default_global = {
             "custom_openai_endpoint": None,
             "openai_endpoint_request_timeout": 60,
-            #"optout": [],
-            #"optin": [],
+            "optout": [],
+            "optin": [],
             "ratelimit_reset": datetime(1990, 1, 1, 0, 1).strftime("%Y-%m-%d %H:%M:%S"),
             "max_random_prompt_length": 200,
             "max_prompt_length": 200,
@@ -63,8 +63,8 @@ class AIUser(
         }
 
         default_guild = {
-            #"optin_by_default": False,
-            #"optin_disable_embed": False,
+            "optin_by_default": False,
+            "optin_disable_embed": False,
             "reply_percent": DEFAULT_REPLY_PERCENT,
             "messages_backread": 10,
             "messages_backread_seconds": 60 * 120,
@@ -127,7 +127,7 @@ class AIUser(
         all_config = await self.config.all_guilds()
 
         for guild_id, config in all_config.items():
-        #    self.optindefault[guild_id] = config["optin_by_default"]
+            self.optindefault[guild_id] = config["optin_by_default"]
             self.channels_whitelist[guild_id] = config["channels_whitelist"]
             pattern = config["ignore_regex"]
 
@@ -280,10 +280,10 @@ class AIUser(
             return False
         if (ctx.author.id in await self.config.optout()):
             return False
-       # if (
-       #     not self.optindefault.get(ctx.guild.id)
-       #     and (ctx.author.id not in await self.config.optin())
-       # ):
+        if (
+            not self.optindefault.get(ctx.guild.id)
+            and (ctx.author.id not in await self.config.optin())
+        ):
             return False
         if self.ignore_regex.get(ctx.guild.id) and self.ignore_regex[ctx.guild.id].search(ctx.message.content):
             return False
