@@ -123,9 +123,9 @@ class ResponseSettings(MixinMeta):
         await ctx.send(embed=embed)
 """
 
-    @response.group()
-    @checks.is_owner()
-    async def history(self, _):
+@response.group()
+@checks.is_owner()
+async def history(self, _):
         """ Change the prompt context settings for the current server
 
             The most recent messages that are within the time gap and message limits are used to create context.
@@ -133,8 +133,8 @@ class ResponseSettings(MixinMeta):
         """
         pass
 
-    @history.command(name="backread", aliases=["messages", "size"])
-    async def history_backread(self, ctx: commands.Context, new_value: int):
+@history.command(name="backread", aliases=["messages", "size"])
+async def history_backread(self, ctx: commands.Context, new_value: int):
         """ Set max amount of messages to be used """
         await self.config.guild(ctx.guild).messages_backread.set(new_value)
         embed = discord.Embed(
@@ -143,8 +143,8 @@ class ResponseSettings(MixinMeta):
             color=await ctx.embed_color())
         return await ctx.send(embed=embed)
 
-    @history.command(name="time", aliases=["gap"])
-    async def history_time(self, ctx: commands.Context, new_value: int):
+@history.command(name="time", aliases=["gap"])
+async def history_time(self, ctx: commands.Context, new_value: int):
         """ Set max time (s) allowed between messages to be used
 
             eg. if set to 60, once messsages are more than 60 seconds apart, more messages will not be added.
@@ -158,9 +158,9 @@ class ResponseSettings(MixinMeta):
             color=await ctx.embed_color())
         return await ctx.send(embed=embed)
 
-    @response.group(name="weights", aliases=["logit_bias", "bias"])
-    @checks.admin_or_permissions(manage_guild=True)
-    async def weights(self, _):
+@response.group(name="weights", aliases=["logit_bias", "bias"])
+@checks.admin_or_permissions(manage_guild=True)
+async def weights(self, _):
         """
             Bias the LLM for/against certain words (tokens)
 
@@ -170,8 +170,8 @@ class ResponseSettings(MixinMeta):
         """
         pass
 
-    @weights.command(name="list", aliases=["show"])
-    async def show_weight(self, ctx: commands.Context):
+@weights.command(name="list", aliases=["show"])
+async def show_weight(self, ctx: commands.Context):
         """
             Show weights
         """
@@ -190,8 +190,8 @@ class ResponseSettings(MixinMeta):
             embed.add_field(name=word, value=weight, inline=False)
         await ctx.send(embed=embed)
 
-    @weights.command(name="add")
-    async def set_weight(self, ctx: commands.Context, word: str, weight: int):
+@weights.command(name="add")
+async def set_weight(self, ctx: commands.Context, word: str, weight: int):
         """
             Sets weight for a specific word
 
@@ -248,8 +248,8 @@ class ResponseSettings(MixinMeta):
             )
             return await ctx.send(embed=embed)
 
-    @weights.command(name="remove", aliases=["delete"])
-    async def remove_weight(self, ctx: commands.Context, word: str):
+@weights.command(name="remove", aliases=["delete"])
+async def remove_weight(self, ctx: commands.Context, word: str):
         """
         Removes weight for a specific word
 
@@ -280,7 +280,7 @@ class ResponseSettings(MixinMeta):
         )
         return await ctx.send(embed=embed)
 
-    async def get_all_tokens(self, word: str, encoding: tiktoken.Encoding):
+async def get_all_tokens(self, word: str, encoding: tiktoken.Encoding):
         """
             Returns all possible tokens for a word
         """
@@ -301,9 +301,9 @@ class ResponseSettings(MixinMeta):
         append_token_if_single(" " + word.upper())
         return list(tokens)
 
-    @response.command(name="parameters")
-    @checks.is_owner()
-    async def set_custom_parameters(self, ctx: commands.Context, *, json_block: str):
+@response.command(name="parameters")
+@checks.is_owner()
+async def set_custom_parameters(self, ctx: commands.Context, *, json_block: str):
         """ Set custom parameters for an endpoint using a JSON code block
 
             To reset parameters to default, use `[p]aiuser response parameters reset`
