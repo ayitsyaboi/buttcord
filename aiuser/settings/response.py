@@ -105,7 +105,7 @@ class ResponseSettings(MixinMeta):
             await self.config.guild(ctx.guild).removelist_regexes.set(DEFAULT_REMOVE_PATTERNS)
             return await confirm.edit(embed=discord.Embed(title="Removelist reset.", color=await ctx.embed_color()))
 
-"""
+
     @response.command(name="toggleoptinembed")
     async def toggle_optin_embed(self, ctx):
         Toggles warning embed about opt-in on or off
@@ -122,7 +122,7 @@ class ResponseSettings(MixinMeta):
             )
 
         await ctx.send(embed=embed)
-"""
+
 
 @response.group()
 @checks.is_owner()
